@@ -33,7 +33,7 @@ services:
     tty: true
     restart: always
     environment:
-      - MONGO_URL=mongodb://app-ip-mongo:27017/products
+      - MONGODB_URI=mongodb://app-ip-mongo:27017/yolomy
     ports:
       - "5000:5000"
     depends_on: 
