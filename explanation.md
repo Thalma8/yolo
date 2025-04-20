@@ -121,3 +121,6 @@ This document covers our design and implementation choices across each microserv
 
 With these structured choices, the project can reliably be cloned, built, and run using Docker Compose, providing a fully functional microservices-based e-commerce platform.
 
+![Alt text](docker.png)
+![Alt text](yolo-backend.png)
+![Alt text](yolo-client.png)
