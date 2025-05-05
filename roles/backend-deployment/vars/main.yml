@@ -1,4 +1,6 @@
----
-container_name: brian-yolo-backend
-network: app-net
-volume: app-mongo-data/app
+backend_image: thalma/yolo-backend:v1.0.2
+backend_container: backend
+backend_port: 5000
+backend_network: app-net
+backend_volume: app-mongo-data
+mongodb_uri: mongodb://app-ip-mongo:27017/yolomy

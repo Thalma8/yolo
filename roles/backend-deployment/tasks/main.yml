@@ -1,16 +1,36 @@
 ---
-- name: Pull image from repository
+- name: Ensure app network exists
+  docker_network:
+    name: "{{ backend_network }}"
+    driver: bridge
+    ipam_config:
+      - subnet: 172.20.0.0/16
+        ip_range: 172.20.0.0/16
+    attachable: true
+
+- name: Ensure backend volume exists
+  docker_volume:
+    name: "{{ backend_volume }}"
+
+- name: Pull backend image
   docker_image:
-    name: brianbwire/brian-yolo-backend:v1.0.0
+    name: "{{ backend_image }}"
     source: pull
 
-- name: Create Node.js Backend Container
+- name: Run backend container
   docker_container:
-    name: brian-yolo-backend
-    image: brianbwire/brian-yolo-backend:v1.0.0
+    name: "{{ backend_container }}"
+    image: "{{ backend_image }}"
+    state: started
+    restart_policy: always
     networks:
-      - name: app-net
-    ports:
-      - "5000:5000"
+      - name: "{{ backend_network }}"
+    published_ports:
+      - "{{ backend_port }}:{{ backend_port }}"
+    volumes:
+      - "{{ backend_volume }}:/app"
+    env:
+      MONGODB_URI: "{{ mongodb_uri }}"
     command: "npm start"
-  become: yes
+  tags:
+    - backend

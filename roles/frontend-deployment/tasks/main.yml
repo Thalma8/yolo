@@ -1,0 +1,36 @@
+---
+- name: Ensure app network exists
+  docker_network:
+    name: "{{ frontend_network }}"
+    driver: bridge
+    ipam_config:
+      - subnet: 172.20.0.0/16
+        ip_range: 172.20.0.0/16
+    attachable: true
+
+- name: Ensure frontend volume exists
+  docker_volume:
+    name: "{{ frontend_volume }}"
+
+- name: Pull frontend image
+  docker_image:
+    name: "{{ frontend_image }}"
+    source: pull
+
+- name: Run frontend container
+  docker_container:
+    name: "{{ frontend_container }}"
+    image: "{{ frontend_image }}"
+    state: started
+    restart_policy: always
+    tty: true
+    interactive: true
+    networks:
+      - name: "{{ frontend_network }}"
+    published_ports:
+      - "{{ frontend_port }}:{{ frontend_port }}"
+    volumes:
+      - "{{ frontend_volume }}:/app"
+    command: "npm start"
+  tags:
+    - frontend

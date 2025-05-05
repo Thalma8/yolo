@@ -1,14 +1,34 @@
 ---
+- name: Ensure MongoDB volume exists
+  docker_volume:
+    name: "{{ mongo_volume_name }}"
+
+- name: Ensure Docker network exists
+  docker_network:
+    name: "{{ mongo_network }}"
+    driver: bridge
+    ipam_config:
+      - subnet: 172.20.0.0/16
+        ip_range: 172.20.0.0/16
+    attachable: true
+
+- name: Pull MongoDB image
+  docker_image:
+    name: "{{ mongo_image }}"
+    source: pull
+
 - name: Run MongoDB Container
   docker_container:
-    name: app-mongo
-    image: mongo
-    ports:
-      - '27017:27017'
+    name: "{{ mongo_container_name }}"
+    image: "{{ mongo_image }}"
+    state: started
+    restart_policy: always
+    published_ports:
+      - "{{ mongo_port }}:{{ mongo_port }}"
     volumes:
-      - ./app-mongo-data:/data/db
+      - "{{ mongo_volume_name }}:/data/db"
     networks:
-      - name: app-net
+      - name: "{{ mongo_network }}"
   tags:
     - database
-    - backend
+    - mongo
