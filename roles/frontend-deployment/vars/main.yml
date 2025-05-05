@@ -3,3 +3,4 @@ frontend_container: frontend
 frontend_port: 3000
 frontend_network: app-net
 frontend_volume: app-mongo-data
+frontend_build_path: /home/vagrant/yolo/client 

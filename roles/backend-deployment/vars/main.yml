@@ -4,3 +4,4 @@ backend_port: 5000
 backend_network: app-net
 backend_volume: app-mongo-data
 mongodb_uri: mongodb://app-ip-mongo:27017/yolomy
+backend_build_path: /home/vagrant/yolo/backend 

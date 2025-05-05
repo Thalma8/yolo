@@ -12,10 +12,13 @@
   docker_volume:
     name: "{{ frontend_volume }}"
 
-- name: Pull frontend image
+- name: Build frontend image from Dockerfile
   docker_image:
     name: "{{ frontend_image }}"
-    source: pull
+    build:
+      path: "{{ frontend_build_path }}"
+    source: build
+
 
 - name: Run frontend container
   docker_container:

@@ -12,10 +12,12 @@
   docker_volume:
     name: "{{ backend_volume }}"
 
-- name: Pull backend image
+- name: Build backend image from Dockerfile
   docker_image:
     name: "{{ backend_image }}"
-    source: pull
+    build:
+      path: "{{ backend_build_path }}"
+    source: build
 
 - name: Run backend container
   docker_container:
