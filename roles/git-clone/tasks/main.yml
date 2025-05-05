@@ -1,0 +1,13 @@
+---
+- name: Install Git
+  apt:
+    name: git
+    state: present
+    update_cache: yes
+
+- name: Clone yolo project from GitHub
+  git:
+    repo: https://github.com/Thalma8/yolo.git
+    dest: /home/vagrant/yolo
+    version: main
+    force: yes
