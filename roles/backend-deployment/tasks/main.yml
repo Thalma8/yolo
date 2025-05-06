@@ -8,31 +8,27 @@
         iprange: 172.20.0.0/16
     attachable: true
 
-- name: Ensure backend volume exists
-  docker_volume:
-    name: "{{ backend_volume }}"
-
 - name: Build backend image from Dockerfile
   docker_image:
     name: "{{ backend_image }}"
+    source: build
     build:
       path: "{{ backend_build_path }}"
-    source: build
+    force_source: true
+    force_tag: true
 
 - name: Run backend container
   docker_container:
     name: "{{ backend_container }}"
     image: "{{ backend_image }}"
     state: started
-    restart_policy: always
-    networks:
-      - name: "{{ backend_network }}"
+    recreate: true
     published_ports:
       - "{{ backend_port }}:{{ backend_port }}"
-    volumes:
-      - "{{ backend_volume }}:/app"
     env:
       MONGODB_URI: "{{ mongodb_uri }}"
-    command: "npm start"
+    networks:
+      - name: "{{ backend_network }}"
+    detach: true
   tags:
     - backend

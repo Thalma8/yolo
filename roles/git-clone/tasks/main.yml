@@ -9,5 +9,5 @@
   git:
     repo: https://github.com/Thalma8/yolo.git
     dest: /home/vagrant/yolo
-    version: main
+    version: master
     force: yes

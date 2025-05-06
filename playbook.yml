@@ -4,6 +4,7 @@
   become: true
   roles: 
     - docker_setup
+    - git-clone
     - frontend-deployment
     - setup-mongodb   
     - backend-deployment

@@ -1,7 +1,7 @@
 ---
 - name: Ensure MongoDB volume exists
   docker_volume:
-    name: "{{ mongo_volume_name }}"
+    name: "{{ mongo_volume }}"
 
 - name: Ensure Docker network exists
   docker_network:
@@ -19,14 +19,14 @@
 
 - name: Run MongoDB Container
   docker_container:
-    name: "{{ mongo_container_name }}"
+    name: "{{ mongo_container }}"   # ✅ corrected from mongo_container_name
     image: "{{ mongo_image }}"
     state: started
     restart_policy: always
     published_ports:
       - "{{ mongo_port }}:{{ mongo_port }}"
     volumes:
-      - "{{ mongo_volume_name }}:/data/db"
+      - "{{ mongo_volume }}:/data/db"
     networks:
       - name: "{{ mongo_network }}"
   tags:
