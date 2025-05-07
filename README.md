@@ -1,97 +1,77 @@
-# README
+🛠 Vagrant and Ansible Integration
+To simplify development and ensure consistent configuration, this project integrates Vagrant and Ansible for local provisioning in both Stage 1 and Stage 2 setups.
 
-This document provides detailed information and best practices followed during the development and deployment of the microservices-based e-commerce platform using Docker.
+🔧 Vagrant
+A lightweight virtual machine is provisioned using ubuntu/focal64 as the base box.
 
----
+VM setup is handled through Vagrantfile with no SSH keys or certificates needed.
 
-## Project Description
+Ensures a clean, reproducible environment for running Docker and Ansible.
 
-This project consists of three distinct microservices:
-- **Frontend (`yolo-client`)**: React.js application for user interactions.
-- **Backend (`yolo-backend`)**: Node.js service handling business logic and API interactions.
-- **Database (`app-ip-mongo`)**: MongoDB service for persistent data storage.
+Shared folders allow synced access to local project files.
 
----
+⚙️ Ansible Automation
+Ansible automates container orchestration, network setup, and Docker image building using modular, reusable roles.
 
-## Git Workflow
-- Each microservice has a dedicated Git branch.
-- Descriptive commits clearly document each development step.
-- Pull Requests (PR) reviewed and merged after successful testing.
+🧱 Roles Used
+setup-mongodb:
 
----
+Creates a persistent Docker volume and a custom bridge network (app-net)
 
-## Folder Structure
-```
-.
-├── backend/
-│   ├── Dockerfile
-│   └── server.js
-├── client/
-│   ├── Dockerfile
-│   └── src/
-└── docker-compose.yaml
-```
+Deploys the MongoDB container with appropriate port and volume mappings
 
----
+backend-deployment:
 
-## Docker Image Choices
+Builds the Node.js backend image (multi-stage)
 
-### Frontend (`yolo-client`)
-- **Builder**: `node:14-slim` – Chosen for lightweight builds (~165MB).
-- **Runtime**: `alpine:3.16.7` – Minimizes container size (~7MB).
+Sets environment variable MONGODB_URI
 
-### Backend (`yolo-backend`)
-- **Builder**: `node:14` – Robust environment for dependency handling (~914MB).
-- **Runtime**: `alpine:3.16.7` – Efficient lightweight runtime (~7MB).
+Deploys the backend service container
 
-### Database (`app-ip-mongo`)
-- Official MongoDB image (`mongo:latest`) – Reliable and widely supported (~888MB).
+frontend-deployment:
 
----
+Builds the React frontend image
 
-## Dockerfile Directives
-- Multi-stage builds employed for both frontend and backend for optimized runtime efficiency.
-- Explicitly defined `EXPOSE` directives and runtime commands (`CMD`).
+Injects the REACT_APP_BACKEND_URL environment variable
 
----
+Exposes the app via port 3000
 
-## Docker Compose Networking
-- Single custom bridge network `app-net` ensures efficient inter-service communication.
-- Clearly defined port mappings:
-  - Frontend: Host `3001` → Container `3000`
-  - Backend: Host `5000` → Container `5000`
-  - Database: Host `27017` → Container `27017`
+🧾 Playbooks Used
+Stage 1 – Direct Vagrant Provisioning
+File: playbook.yml
 
----
+Trigger: Automatically runs when you do:
 
-## Docker Compose Volumes
-- `app-mongo-data` ensures MongoDB data persistence across container restarts.
+bash
+Copy code
+vagrant up --provision
+Purpose: Used during development and testing. Runs all Ansible roles on the local VM directly.
 
----
+Stage 2 – Terraform + Ansible
+File: site.yml
 
-## Image Naming and Tagging
-- Semantic versioning for easy identification (`v1.0.2`).
-- Images tagged and clearly labeled, pushed to Docker Hub.
+Trigger: Triggered by Terraform using a local-exec provisioner.
 
----
+bash
+Copy code
+terraform apply -auto-approve
+Purpose: Demonstrates infrastructure-as-code using Terraform to invoke Ansible automatically during provisioning.
 
-## Running & Debugging
-- Launch application with: `docker compose up -d`
-- Monitor logs via:
-  ```sh
-  docker compose logs -f [service_name]
-  ```
-- End-to-end functionality tested and verified.
+🔁 Provisioning Workflow
+Stage 1:
 
----
+vagrant up → VM boots → playbook.yml runs inside the VM
 
-## Docker Hub Deployment
-- Images are available on Docker Hub with clear version tags.
-- Screenshot provided clearly displaying Docker Hub image versions.
-![Alt text](docker.png)
-![Alt text](yolo-backend.png)
-![Alt text](yolo-client.png)
----
+Stage 2:
 
-Following the above best practices ensures reliability, maintainability, and ease of collaboration for future development.
+terraform apply → local Ansible (site.yml) configures the system
 
+🌐 Accessing the App
+After either provisioning method, the app is available at:
+
+Service	URL
+Frontend	http://localhost:3000
+Backend API	http://localhost:5000/api/products
+Database	Accessible via MongoDB on port 27017
+
+This structure supports both development and automated infrastructure provisioning, giving you flexibility, clarity, and control.
