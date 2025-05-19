@@ -115,33 +115,10 @@ This deployment demonstrates effective use of Kubernetes primitives:
 The live backend is available at:
 
 ```
-http://<YOUR_EXTERNAL_IP_OR_LOADBALANCER_IP>/
+http://http://34.122.108.45/
 ```
 
 ---
 
-## Next Steps / Improvements
 
-* Implement Ingress with HTTPS for secure traffic.
-* Add resource requests and limits for better cluster resource management.
-* Add health checks (liveness/readiness probes) to improve pod resiliency.
-* Enable MongoDB authentication for security.
 
----
-
-## Contact
-
-For questions or clarifications, please reach out:
-
-* **Thalma Thandie Simiyu**
-* Email: [thandiethalma@gmail.com](mailto:thandiethalma@gmail.com)
-* LinkedIn: [https://www.linkedin.com/in/thalma-simiyu](https://www.linkedin.com/in/thalma-simiyu)
-
----
-
-```
-
----
-
-If you want, I can also generate the `explanation.md` or help create the full YAML manifests with the LoadBalancer service included! Would you like me to do that?
-```
